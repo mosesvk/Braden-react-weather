@@ -12,11 +12,14 @@ code {
     monospace;
 }
 
-html, body, #root {
+html, body {
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 #root {
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;

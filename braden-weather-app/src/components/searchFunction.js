@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCityData } from "../App";
+import TimeZoneClock from "./timezone";
 import "./searchFunction.css";
 
 export const timeDateContainer = (timeDateData, dispatch) => {
   const timeDateToTransfer = {
-    date: timeDateData.date,
-    time: timeDateData.time,
+    timeZone: timeDateData.timeZone,
   };
 
   // Dispatch the time and date data to the context
   dispatch({ type: "GET_TIME_DATE", payload: timeDateToTransfer });
   console.log("TimeDateData:", timeDateData);
-  console.log(timeDateToTransfer);
 
   // Return the data that needs to be updated in the state
   return timeDateToTransfer;
@@ -24,13 +23,7 @@ function SearchFunction() {
     latitude: null,
     longitude: null,
   });
-  const [formattedDate, setFormattedDate] = useState("");
-  const [formattedTime, setFormattedTime] = useState("");
-
-  useEffect(() => {
-    console.log("Formatted Date:", formattedDate);
-    console.log("Formatted Time:", formattedTime);
-  }, [formattedDate, formattedTime]);
+  const [timeZone, setTimeZone] = useState("");
 
   const { state, dispatch } = useCityData();
 
@@ -54,6 +47,8 @@ function SearchFunction() {
   }
 
   function chosenLocation(city) {
+    const CityTimeZone = `${city?.timezone}`; 
+    setTimeZone(CityTimeZone);
     setSelectedLocation({
       latitude: city.latitude,
       longitude: city.longitude,
@@ -61,29 +56,11 @@ function SearchFunction() {
 
     dispatch({ type: "FETCH_DATA", payload: city });
 
-    // Set the formatted date and time directly in the component's state
-    const dateOptions = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    const timeOptions = {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    };
-    const formattedDate = new Date().toLocaleString("en-US", dateOptions);
-    const formattedTime = new Date().toLocaleString("en-US", timeOptions);
-    setFormattedDate(formattedDate);
-    setFormattedTime(formattedTime);
-
     // Clear input value
     changeLocation("");
     // Clear search results
     setSearchResults([]);
   }
-
   return (
     <>
       <div className="searchData">
@@ -132,14 +109,7 @@ function SearchFunction() {
               })}
           </ul>
         </div>
-        <div className="timeDate">
-          <div className="date">
-            <p>{formattedDate}</p>
-          </div>
-          <div className="time">
-            <p>{formattedTime}</p>
-          </div>
-        </div>
+        <TimeZoneClock timeZone={timeZone ? timeZone : undefined } />
       </div>
     </>
   );

@@ -12,8 +12,6 @@ export const sevenDayForecast = (tempData, dispatch) => {
 
     // Dispatch the forecast data to the context
     dispatch({ type: "GET_FORECAST", payload: forecastData });
-    console.log("Seven Day Forecast Data:", tempData);
-    console.log(forecastData);
 
     // Resolve the promise with the forecast data
     resolve(forecastData);
@@ -22,11 +20,6 @@ export const sevenDayForecast = (tempData, dispatch) => {
 
 function WeekForecast({ selectedLocation }) {
   const [nextDays, setNextDays] = useState([]);
-  const [forecast, setForecast] = useState({
-    forecastMax: [],
-    forecastMin: [],
-  });
-
   const { state, dispatch } = useCityData();
 
   useEffect(() => {
@@ -44,17 +37,13 @@ function WeekForecast({ selectedLocation }) {
 
     if (selectedLocation) {
       // Call sevenDayForecast function to update the forecast state
-      sevenDayForecast({}, dispatch).then((forecastData) => {
-        // Use the forecast data after it has been fetched
-        setForecast({
-          forecastMax: forecastData.forecastMax,
-          forecastMin: forecastData.forecastMin,
-        });
+      sevenDayForecast({}, dispatch).then(() => {
+        // The data is dispatched to the context, no need to update local state
       });
     }
   }, [dispatch, selectedLocation]);
 
-  return (
+  return state.forecastData ? (
     <>
       <div className="forecastBody">
         <ul className="weekForecast">
@@ -71,6 +60,8 @@ function WeekForecast({ selectedLocation }) {
         </ul>
       </div>
     </>
+  ) : (
+    <><div className="forecastBody"></div></>
   );
 }
 

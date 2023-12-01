@@ -9,25 +9,13 @@ function WeatherAPI() {
     const { state, dispatch } = useCityData(); 
     const selectedLocation = state.searchData;
   const [currentWeather, setWeather] = useState(null);
-  const [formattedDate, setFormattedDate] = useState("");
-  const [formattedTime, setFormattedTime] = useState("");
+  const [timeZone, setTimeZone] = useState("");
 
   const memoizedDispatch = useCallback(dispatch, [dispatch]);
 
   useEffect(() => {
     if (selectedLocation) {
       const { latitude, longitude } = selectedLocation;
-      const dateOptions = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
-      const timeOptions = {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      };
 
       // Fetch weather data
       fetch(
@@ -36,27 +24,15 @@ function WeatherAPI() {
         .then((response) => response.json())
         .then((json) => {
           console.log(json);
-
-          const apiCurrentTime = json.current.time;
-
+          const time = json.timezone;
           // Format the date and time
-          const formattedDate = new Date(apiCurrentTime).toLocaleString(
-            "en-US",
-            dateOptions
-          );
-          const formattedTime = new Date(apiCurrentTime).toLocaleString(
-            "en-US",
-            timeOptions
-          );
-
           const updatedTimeDateData = timeDateContainer(
-            { date: formattedDate, time: formattedTime },
+            { timeZone: time },
             dispatch
           );
 
           // Update the state with the returned data
-          setFormattedDate(updatedTimeDateData.date);
-          setFormattedTime(updatedTimeDateData.time);
+          setTimeZone(updatedTimeDateData.timeZone);
 
           if (
             json.daily &&
