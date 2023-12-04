@@ -15,6 +15,11 @@ export const timeDateContainer = (timeDateData, dispatch) => {
   return timeDateToTransfer;
 };
 
+//getting the flag
+function getFlagUrl(countryCode) {
+  return `https://raw.githubusercontent.com/HatScripts/circle-flags/gh-pages/flags/${countryCode.toLowerCase()}.svg`;
+}
+
 function SearchFunction() {
   const [location, changeLocation] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -46,7 +51,7 @@ function SearchFunction() {
   }
 
   function chosenLocation(city) {
-    const CityTimeZone = `${city?.timezone}`; 
+    const CityTimeZone = `${city?.timezone}`;
     setTimeZone(CityTimeZone);
     setSelectedLocation({
       latitude: city.latitude,
@@ -89,8 +94,18 @@ function SearchFunction() {
                   );
 
                 if (admins.length > 0) {
+                  const flagUrl = getFlagUrl(city.country_code); // Get flag URL here
                   return (
                     <li className="citiesToChoose" key={city.id}>
+                      {flagUrl && (
+                        <div className="flagContainer">
+                          <img
+                            className="flag"
+                            src={flagUrl}
+                            alt="Country Flag"
+                          />
+                        </div>
+                      )}
                       <p>
                         {city.name}, {admins.join(", ")}
                       </p>
@@ -108,7 +123,7 @@ function SearchFunction() {
               })}
           </ul>
         </div>
-        <TimeZoneClock timeZone={timeZone ? timeZone : undefined } />
+        <TimeZoneClock timeZone={timeZone ? timeZone : undefined} />
       </div>
     </>
   );
