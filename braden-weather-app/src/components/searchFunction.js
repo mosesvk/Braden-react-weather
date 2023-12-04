@@ -10,7 +10,6 @@ export const timeDateContainer = (timeDateData, dispatch) => {
 
   // Dispatch the time and date data to the context
   dispatch({ type: "GET_TIME_DATE", payload: timeDateToTransfer });
-  console.log("TimeDateData:", timeDateData);
 
   // Return the data that needs to be updated in the state
   return timeDateToTransfer;

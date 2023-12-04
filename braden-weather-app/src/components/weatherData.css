@@ -23,3 +23,142 @@ p.currentWeather {
     display: flex;
     justify-content: center;
 }
+.apparent {
+    color: white;
+}
+.weatherCode {
+    color: white;
+}
+.currentDataContainer {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.percipitationContainer {
+    color: white;
+    width: 40%;
+    height: 40%;
+    padding: 10px;
+    border-radius: 35px;
+    margin: 10px;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.liquidTop {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 5px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+.liquidTop p, .liquidTop i {
+    margin: 0;
+    padding: 0; 
+}
+.liquid {
+    color: white;
+}
+.UvIndexContainer {
+    color: white;
+    width: 40%;
+    height: 40%;
+    padding: 10px;
+    border-radius: 35px;
+    margin: 10px;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.UvTop {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 5px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+.UvTop p, .UvTop i {
+    margin: 0;
+    padding: 0; 
+}
+.UvIndex {
+    color: white; 
+}
+.UvIndexBar {
+    
+}
+.humidityContainer {
+    color: white;
+    width: 40%;
+    height: 40%;
+    padding: 10px;
+    border-radius: 35px;
+    margin: 10px;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.humidTop {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 5px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+.humidTop p, .humidTop i {
+    margin: 0;
+    padding: 0; 
+}
+.humidity {
+    color: white;
+}
+.windData {
+    color: white;
+    width: 40%;
+    height: 40%;
+    padding: 10px;
+    border-radius: 35px;
+    margin: 10px;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.windTop {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 5px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+.windTop p, .windTop i {
+    margin: 0;
+    padding: 0; 
+}
+.windDirection {
+    color: white;
+}
+.windSpeed {
+    color: white;
+}
+.isDay {
+    color: white;
+}

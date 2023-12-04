@@ -10,7 +10,6 @@ import "./App.css";
 import SearchFunction from "./components/searchFunction";
 import WeekForecast from "./components/forecast";
 import WeatherAPI from "./components/weatherData";
-import { DayOrNightProvider } from "./components/DayOrNight";
 
 export const dataReducer = (state, action) => {
   switch (action.type) {

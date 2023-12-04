@@ -63,11 +63,11 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(120, 120, 120);
 }
 .active {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background-color: rgb(129, 77, 77);
+  background-color: rgb(255, 255, 255);
 }
