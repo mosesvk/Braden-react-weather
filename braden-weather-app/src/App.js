@@ -89,20 +89,42 @@ const AppInstance = ({ index }) => {
     </CityDataProvider>
   );
 };
+function saveDotsAndClickCount(clickCount, activeDotIndex) {
+  localStorage.setItem(
+    "appData",
+    JSON.stringify({ clickCount, activeDotIndex })
+  );
+}
 
 function App() {
   const [clickCount, setClickCount] = useState(0);
   const [activeDotIndex, setActiveDotIndex] = useState(0);
   const dotsContainerRef = useRef(null);
 
-  //handling button to add location components
+  useEffect(() => {
+    const appData = JSON.parse(localStorage.getItem("appData")) || {
+      clickCount: 0,
+      activeDotIndex: 0,
+    };
 
+    // Update the state with the retrieved clickCount
+    setClickCount(appData.clickCount);
+    setActiveDotIndex(appData.activeDotIndex);
+
+    // Uncomment this line if you want to immediately save the clickCount to local storage
+    // saveDotsAndClickCount(appData.clickCount, appData.activeDotIndex);
+  }, []); // Empty dependency array to run the effect only once during mount
+
+  // handling button to add location components
   function handleButtonClick() {
-    setClickCount(clickCount + 1);
+    setClickCount((prevCount) => {
+      const newCount = prevCount + 1;
+      saveDotsAndClickCount(newCount, activeDotIndex);
+      return newCount;
+    });
   }
 
-  //clicking the dots and dot logic
-
+  // clicking the dots and dot logic
   function handleDotClick(index) {
     setActiveDotIndex(index);
     const targetElement = document.getElementById(`app-${index}`);
@@ -115,18 +137,20 @@ function App() {
     }
   }
 
-  //handle user scrolling and updating current active dot
-  function handleScroll() {
-    if (!dotsContainerRef.current) return;
+  // handle user scrolling and updating current active dot
+  // handle user scrolling and updating current active dot
+function handleScroll() {
+  if (!dotsContainerRef.current) return;
 
-    const scrollPosition = dotsContainerRef.current.scrollLeft;
-    //const containerWidth = dotsContainerRef.current.clientWidth;
-    const appWidth = dotsContainerRef.current.querySelector(".App").offsetWidth;
+  const scrollPosition = dotsContainerRef.current.scrollLeft;
+  const appWidth = dotsContainerRef.current.querySelector(".App").offsetWidth;
 
-    const activeIndex = Math.round(scrollPosition / appWidth);
+  const activeIndex = Math.round(scrollPosition / appWidth);
 
-    setActiveDotIndex(activeIndex);
-  }
+  setActiveDotIndex(activeIndex);
+  saveDotsAndClickCount(clickCount, activeIndex); // Pass activeIndex instead of activeDotIndex
+}
+
 
   useEffect(() => {
     window.addEventListener("wheel", handleScroll);
@@ -134,9 +158,9 @@ function App() {
     return () => {
       window.removeEventListener("wheel", handleScroll);
     };
-  }, [clickCount]);
+  }, [clickCount]); 
 
-  //jsx return
+  // jsx return
   return (
     <>
       <div className="buttonDots">
