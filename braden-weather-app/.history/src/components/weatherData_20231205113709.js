@@ -87,11 +87,15 @@ function getWeatherCodeMessage(weatherCodeJson) {
   return weatherCodeMessage;
 }
 function saveLinks(newLink, clickCount) {
+  const [links, setLinks] = useState([]);
+  // Set the link at the current click count index to null
+  // links[clickCount] = null;
 
-  const links = localStorage.getItem('links') ? JSON.parse(localStorage.getItem('links')) : [];
   
-  localStorage.setItem('links', JSON.stringify([...links, newLink]));
-  console.log('saveLinks()', [...links, newLink]);
+
+  // Save the updated links array to localStorage
+  localStorage.setItem('links', JSON.stringify(links));
+  console.log('saveLinks()', links);
 }
 
 function WeatherAPI() {
@@ -112,7 +116,7 @@ function WeatherAPI() {
   const [UVIndex, setUVIndex] = useState('');
   const [clickCount, setClickCount] = useState(0);
   const [activeDotIndex, setActiveDotIndex] = useState(0);
-  const [links, setLinks] = useState([]);
+
 
   useEffect(() => {
     if (selectedLocation) {

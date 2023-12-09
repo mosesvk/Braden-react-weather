@@ -86,12 +86,13 @@ function getWeatherCodeMessage(weatherCodeJson) {
   }
   return weatherCodeMessage;
 }
-function saveLinks(newLink, clickCount) {
+function saveLinks(links, clickCount) {
+  // Set the link at the current click count index to null
+  // links[clickCount] = null;
 
-  const links = localStorage.getItem('links') ? JSON.parse(localStorage.getItem('links')) : [];
-  
-  localStorage.setItem('links', JSON.stringify([...links, newLink]));
-  console.log('saveLinks()', [...links, newLink]);
+  // Save the updated links array to localStorage
+  localStorage.setItem('links', JSON.stringify(links));
+  console.log('saveLinks()', links);
 }
 
 function WeatherAPI() {
@@ -119,6 +120,10 @@ function WeatherAPI() {
       const { latitude, longitude } = selectedLocation;
       let apiLink = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,uv_index&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,rain,showers,snowfall,snow_depth,visibility,uv_index,is_day&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto`;
 
+      setLinks((prevLinks) => {
+        console.log('prevLink', prevLinks);
+        return [...prevLinks, apiLink];
+      });
 
       // Fetch data using the link
       fetch(apiLink)
@@ -196,7 +201,7 @@ function WeatherAPI() {
           console.log(error.message);
         });
 
-        saveLinks(apiLink);
+        saveLinks([...links, apiLink]);
       }
       // Save null value for the current click count
   }, [selectedLocation]);
