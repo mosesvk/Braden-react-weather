@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useCityData } from '../App';
 import { sevenDayForecast } from './forecast';
-import { timeDateContainer } from './searchFunction';
+// import { timeDateContainer } from './searchFunction';
 import { saveLinks } from './utils';
 
 import './weatherData.css';
@@ -94,9 +94,9 @@ const WeatherAPI = React.memo(() => {
   const { state, dispatch } = useCityData();
   const selectedLocation = state.searchData;
   const [currentWeather, setWeather] = useState(null);
-  const [timeZone, setTimeZone] = useState('');
+  // const [timeZone, setTimeZone] = useState('');
   const [apparentTemp, setApparentTemp] = useState('');
-  const memoizedDispatch = useCallback(dispatch, [dispatch]);
+  // const memoizedDispatch = useCallback(dispatch, [dispatch]);
   const [weatherCode, setWeatherCode] = useState('');
   const [percipitation, setpercipitation] = useState('');
   const [rain, setRain] = useState('');
@@ -104,11 +104,11 @@ const WeatherAPI = React.memo(() => {
   const [humidity, setHumdity] = useState('');
   const [windDirection, setwindDirection] = useState('');
   const [windSpeed, setWindSpeed] = useState('');
-  const [isDay, setIsDay] = useState('');
+  // const [isDay, setIsDay] = useState('');
   const [UVIndex, setUVIndex] = useState('');
   const [clickCount, setClickCount] = useState(0);
   const [activeDotIndex, setActiveDotIndex] = useState(0);
-  const [links, setLinks] = useState();
+  // const [links, setLinks] = useState();
 
   const updateFromLocalStorage = useCallback(() => {
     const appData = JSON.parse(localStorage.getItem('appData'));
@@ -129,15 +129,15 @@ const WeatherAPI = React.memo(() => {
         .then((response) => response.json())
         .then((json) => {
           console.log(json);
-          const time = json.timezone;
+          // const time = json.timezone;
           // Format the date and time
-          const updatedTimeDateData = timeDateContainer(
-            { timeZone: time },
-            dispatch
-          );
+          // const updatedTimeDateData = timeDateContainer(
+          //   { timeZone: time },
+          //   dispatch
+          // );
 
           // Update the state with the returned data
-          setTimeZone(updatedTimeDateData.timeZone);
+          // setTimeZone(updatedTimeDateData.timeZone);
 
           if (
             json.daily &&
@@ -194,7 +194,7 @@ const WeatherAPI = React.memo(() => {
           );
           setWindSpeed(json.current.wind_speed_10m + ' ' + 'MPH');
 
-          setIsDay(json.current.is_day);
+          // setIsDay(json.current.is_day);
         })
         .catch((error) => {
           console.log(error.message);
@@ -206,7 +206,7 @@ const WeatherAPI = React.memo(() => {
     console.log('useEffect 2 is running');
 
     const localStorageLinks = JSON.parse(localStorage.getItem('links'));
-    setLinks(localStorageLinks);
+    // setLinks(localStorageLinks);
 
     const appComponentParent = document.querySelector('.locationsContainer');
     const appComponentCount = appComponentParent.children.length;
