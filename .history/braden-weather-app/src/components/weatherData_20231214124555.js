@@ -1,8 +1,54 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useCityData } from '../App';
-import WeatherFetcher from './WeatherFetcher';
+import { sevenDayForecast } from './forecast';
+import { timeDateContainer } from './searchFunction';
+import { saveLinks } from './utils';
 
 import './weatherData.css';
+
+const WeatherFetcher = ({ link, dispatch }) => {
+  const [weatherData, setWeatherData] = useState(null);
+
+  const fetchLinkData = useCallback(() => {
+    fetch(link)
+      .then((response) => response.json())
+      .then((json) => {
+        const time = json.timezone;
+        const updatedTimeDateData = timeDateContainer({ timeZone: time }, dispatch);
+
+        setWeatherData({
+          timeZone: updatedTimeDateData.timeZone,
+          currentTemperature: Math.round(json.current.temperature_2m),
+          // ... other data
+        });
+
+        if (json.daily && json.daily.temperature_2m_min && json.daily.temperature_2m_max) {
+          const min = json.daily.temperature_2m_min;
+          const max = json.daily.temperature_2m_max;
+          const roundedMin = min.map((temp) => (temp ? Math.round(temp) : null));
+          const roundedMax = max.map((temp) => (temp ? Math.round(temp) : null));
+
+          sevenDayForecast({ forecastMin: roundedMin, forecastMax: roundedMax }, dispatch);
+        }
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, [link, dispatch]);
+
+  useEffect(() => {
+    fetchLinkData();
+  }, [fetchLinkData]);
+
+  useEffect(() => {
+    if (weatherData) {
+      // Handle the data as needed
+      saveLinks(link, weatherData);
+    }
+  }, [weatherData, link]);
+
+  return null; // or a loading indicator if needed
+};
 
 function getWeatherCodeMessage(weatherCodeJson) {
   let weatherCodeMessage;
@@ -114,6 +160,12 @@ const WeatherAPI = React.memo(() => {
     setClickCount(appData.clickCount);
   }, []);
 
+  useEffect(() => {
+    console.log('useEffect 1 is running'); // Add this log
+    const appData = JSON.parse(localStorage.getItem('appData'));
+    setActiveDotIndex(appData.activeDotIndex);
+    setClickCount(appData.clickCount);
+  }, [updateFromLocalStorage]);
 
   useEffect(() => {
     if (selectedLocation) {

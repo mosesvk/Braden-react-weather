@@ -114,6 +114,12 @@ const WeatherAPI = React.memo(() => {
     setClickCount(appData.clickCount);
   }, []);
 
+  useEffect(() => {
+    console.log('useEffect 1 is running'); // Add this log
+    const appData = JSON.parse(localStorage.getItem('appData'));
+    setActiveDotIndex(appData.activeDotIndex);
+    setClickCount(appData.clickCount);
+  }, [updateFromLocalStorage]);
 
   useEffect(() => {
     if (selectedLocation) {

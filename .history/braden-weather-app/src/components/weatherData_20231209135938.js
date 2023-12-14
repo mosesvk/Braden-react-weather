@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useCityData } from '../App';
-import WeatherFetcher from './WeatherFetcher';
+import { sevenDayForecast } from './forecast';
+import { timeDateContainer } from './searchFunction';
+import { saveLinks } from './utils';
 
 import './weatherData.css';
 
@@ -114,16 +116,133 @@ const WeatherAPI = React.memo(() => {
     setClickCount(appData.clickCount);
   }, []);
 
+  useEffect(() => {
+    console.log('useEffect 1 is running'); // Add this log
+    const appData = JSON.parse(localStorage.getItem('appData'));
+    setActiveDotIndex(appData.activeDotIndex);
+    setClickCount(appData.clickCount);
+  }, [updateFromLocalStorage]);
+
+  function fetchLinkData(link) {
+    if (link !== null) {
+      fetch(link)
+        .then((response) => response.json())
+        .then((json) => {
+          console.log(json);
+          const time = json.timezone;
+          // Format the date and time
+          const updatedTimeDateData = timeDateContainer(
+            { timeZone: time },
+            dispatch
+          );
+
+          // Update the state with the returned data
+          setTimeZone(updatedTimeDateData.timeZone);
+
+          if (
+            json.daily &&
+            json.daily.temperature_2m_min &&
+            json.daily.temperature_2m_max
+          ) {
+            const min = json.daily.temperature_2m_min;
+            const max = json.daily.temperature_2m_max;
+
+            const roundedMin = min.map((temp) =>
+              temp ? Math.round(temp) : null
+            );
+            const roundedMax = max.map((temp) =>
+              temp ? Math.round(temp) : null
+            );
+
+            // Dispatch the forecast data to the context
+            sevenDayForecast(
+              { forecastMin: roundedMin, forecastMax: roundedMax },
+              dispatch
+            );
+          }
+
+          const roundedTemperature = Math.round(json.current.temperature_2m);
+          setWeather(
+            roundedTemperature + ' ' + json.current_units.temperature_2m
+          );
+          const roundedApparentTemperature = Math.round(
+            json.current.apparent_temperature
+          );
+          setApparentTemp(
+            roundedApparentTemperature +
+              ' ' +
+              json.current_units.apparent_temperature
+          );
+          const weatherCodeMessage = getWeatherCodeMessage(
+            json.current.weather_code
+          );
+          setWeatherCode(weatherCodeMessage);
+
+          setpercipitation(json.current.precipitation);
+          setRain(json.current.rain);
+          setSnow(json.current.snow);
+
+          const roundedUVIndex = Math.round(json.current.uv_index);
+          setUVIndex(roundedUVIndex);
+
+          const roundedHumidity = Math.round(json.current.relative_humidity_2m);
+          setHumdity(roundedHumidity);
+
+          setwindDirection(
+            json.current.wind_direction_10m +
+              json.current_units.wind_direction_10m
+          );
+          setWindSpeed(json.current.wind_speed_10m + ' ' + 'MPH');
+
+          setIsDay(json.current.is_day);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }
+  }
 
   useEffect(() => {
+    console.log('useEffect 2 is running');
+
+    const localStorageLinks = JSON.parse(localStorage.getItem('links'));
+    setLinks(localStorageLinks);
+
+    const appComponentParent = document.querySelector('.locationsContainer');
+    const appComponentCount = appComponentParent.children.length;
+
+    localStorageLinks.forEach((link, linkIndex) => {
+      if (link !== null) {
+        // Add this condition to skip null links
+        for (let appIndex = 0; appIndex < appComponentCount; appIndex++) {
+          if (linkIndex === appIndex) {
+            console.log(
+              'Link Index:',
+              linkIndex,
+              'AppComponent Index:',
+              appIndex
+            );
+            // Fetch the link for the app component
+            fetchLinkData(link);
+          }
+        }
+      }
+    });
+  }, []);
+  
+  useEffect(() => {
+    console.log('useEffect 3 is running'); // Add this log
     if (selectedLocation) {
       const { latitude, longitude } = selectedLocation;
       let apiLink = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,uv_index&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,apparent_temperature,precipitation_probability,precipitation,rain,showers,snowfall,snow_depth,visibility,uv_index,is_day&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,uv_index_max,precipitation_sum,precipitation_hours&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=auto`;
 
-      // Use the WeatherFetcher component to fetch data
-      return <WeatherFetcher key={apiLink} link={apiLink} dispatch={dispatch} />;
+      // Fetch data using the link
+      fetchLinkData(apiLink);
+
+      saveLinks(apiLink, activeDotIndex, clickCount);
     }
-  }, [selectedLocation, dispatch]);
+    // Save null value for the current click count
+  }, [selectedLocation]);
 
   let percipitationMessage;
   let rainMessage;
