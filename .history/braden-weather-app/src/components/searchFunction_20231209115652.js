@@ -65,7 +65,6 @@ function SearchFunction() {
     // Clear search results
     setSearchResults([]);
   }
-  
   return (
     <>
       <div className="searchData">
